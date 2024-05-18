@@ -6,13 +6,22 @@ app.use(express.json());
 
 // Middleware for checking token
 const checkAuth = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token || token !== 'Bearer exampleToken') {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    return res.status(401).json({
+      statusCode: 401,
+      message: 'Authorization header missing'
+    });
+  }
+
+  const token = authHeader.split(' ')[1];
+  if (token !== 'exampleToken') {
     return res.status(401).json({
       statusCode: 401,
       message: 'Unauthorized'
     });
   }
+
   next();
 };
 
